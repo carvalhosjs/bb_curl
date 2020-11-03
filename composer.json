@@ -1,0 +1,24 @@
+{
+  "name": "bblibs/bb_curl",
+  "description": "Request CURL para PHP",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Carlos Mateus Carvalho",
+      "email": "carvalho.ti.adm@gmail.com",
+      "homepage": "https://carvalhosjs.github.io/",
+      "role": "Developer"
+    }
+  ],
+  "config": {
+    "vendor-dir": "vendor"
+  },
+  "autoload": {
+    "psr-4": {
+      "BBCurl\\": "source/"
+    }
+  },
+  "require": {
+    "php": "^7.1"
+  }
+}
