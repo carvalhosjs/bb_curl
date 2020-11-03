@@ -89,13 +89,17 @@ class Request{
         return $this;
     }
 
+
     /**
-     * Método responsável por criar uma chamada do tipo GET.
+     * Método responsável por criar uma chamada do tipo GET
+     * @param array $data - um array com campos do body.
      * @return $this
      */
-    public function get()
+    public function get(array $data=[])
     {
+        $data_string = json_encode($data);
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data_string);
         return $this;
     }
 
