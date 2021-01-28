@@ -47,7 +47,7 @@ class Request{
      * @return $this
      * @throws \Exception
      */
-    public function post(array $data)
+    public function post(array $data=[])
     {
 
         /*if(empty($data)){
