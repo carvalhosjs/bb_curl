@@ -24,6 +24,8 @@ class Request{
 
     private $headers;
 
+    private $errors;
+
     /**
      * Request constructor.
      * @param string $uri - Parametro de URL para ser buscada pelo CURL.
@@ -118,6 +120,12 @@ class Request{
         return $this;
     }
 
+    public function withErrors()
+    {
+        var_dump($this->errors);
+        return $this;
+    }
+
     /**
      * Método responsável por executar a chamada CURL e retornar um array associativo ou erros.
      * @return array|mixed
@@ -127,12 +135,20 @@ class Request{
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->headers);
         $data = curl_exec($this->curl);
         $data = json_decode( $data, true);
+        $statusCode = curl_getinfo($this->curl);
+        $this->errors = $statusCode;
         curl_close($this->curl);
         if(isset($data['success']) && $data['success']==false){
             $this->data = ["Error" => $data['data']['error']];
             return $this->data;
         }
         $this->data = $data;
+        return $this;
+    }
+
+
+    public function data()
+    {
         return $this->data;
     }
 
@@ -145,10 +161,12 @@ class Request{
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
         curl_exec($this->curl);
         $statusCode = curl_getinfo($this->curl);
+        $this->errors = $statusCode;
         curl_close($this->curl);
-        var_dump($statusCode, $this->headers);
         fclose($fp);
+        return $this;
     }
+
 
 
 
