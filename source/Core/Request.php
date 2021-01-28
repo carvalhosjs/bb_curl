@@ -50,13 +50,15 @@ class Request{
     public function post(array $data)
     {
 
-        if(empty($data)){
+        /*if(empty($data)){
             throw  new \Exception("Dados em branco");
             exit;
+        }*/
+        if(!empty($data)){
+            $data_string = json_encode($data);
+            curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data_string);
         }
-        $data_string = json_encode($data);
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data_string);
         return $this;
     }
 
