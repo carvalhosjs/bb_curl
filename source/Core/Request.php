@@ -22,12 +22,14 @@ class Request{
      */
     private $data;
 
+    private $headers;
+
     /**
      * Request constructor.
      * @param string $uri - Parametro de URL para ser buscada pelo CURL.
      * @param array $headers - Parametro para adicionar HEADERS extras durante a chamada.
      */
-    public function __construct(string $uri, array $headers=[])
+    public function __construct(string $uri)
     {
         $this->uri = $uri;
         $this->curl = curl_init($this->uri);
@@ -35,10 +37,26 @@ class Request{
         curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, 10);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_BINARYTRANSFER, true);
-        $defaultheaders = ['Content-Type: application/json'];
-        $headerss = array_merge($defaultheaders, $headers);
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headerss);
 
+    }
+
+    public function withJson()
+    {
+        $this->headers[] = 'Content-Type: application/json';
+        return $this;
+    }
+
+    public function setHeader(string $key, string $value)
+    {
+        $this->headers[] = $key . ": " . $value;
+        return $this;
+    }
+
+    public function setJsonHeader(string $key, array $values)
+    {
+        $payload = json_encode($values);
+        $this->headers[] = $key . ": " . $payload;
+        return $this;
     }
 
     /**
@@ -49,11 +67,6 @@ class Request{
      */
     public function post(array $data=[])
     {
-
-        /*if(empty($data)){
-            throw  new \Exception("Dados em branco");
-            exit;
-        }*/
         if(!empty($data)){
             $data_string = json_encode($data);
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data_string);
@@ -111,18 +124,30 @@ class Request{
      */
     public function run()
     {
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->headers);
         $data = curl_exec($this->curl);
         $data = json_decode( $data, true);
         curl_close($this->curl);
-
         if(isset($data['success']) && $data['success']==false){
             $this->data = ["Error" => $data['data']['error']];
             return $this->data;
         }
         $this->data = $data;
         return $this->data;
+    }
 
-
+    public function download($dest)
+    {
+        set_time_limit(0);
+        $fp = fopen ($dest, 'w+');
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->headers);
+        curl_setopt($this->curl, CURLOPT_FILE, $fp);
+        curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($this->curl);
+        $statusCode = curl_getinfo($this->curl);
+        curl_close($this->curl);
+        var_dump($statusCode, $this->headers);
+        fclose($fp);
     }
 
 
