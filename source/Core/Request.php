@@ -61,6 +61,15 @@ class Request{
         return $this;
     }
 
+    public function sendFile(string $path)
+    {
+        $fp = fopen($path, 'rb');
+        $filesize = filesize($path);
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, fread($fp, $filesize));
+        fclose($fp);
+        return $this;
+    }
+
     /**
      * Método responsável por criar uma chamada do tipo POST.
      * @param array $data - Dadas de FORM que serão buscado ou chamados pelo post.
@@ -166,6 +175,8 @@ class Request{
         fclose($fp);
         return $this;
     }
+
+
 
 
 
