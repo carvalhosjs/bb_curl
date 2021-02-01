@@ -2,6 +2,7 @@
   "name": "bblibs/bb_curl",
   "description": "Request CURL para PHP",
   "minimum-stability": "stable",
+  "license": "MIT",
   "authors": [
     {
       "name": "Carlos Mateus Carvalho",
