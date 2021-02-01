@@ -42,18 +42,34 @@ class Request{
 
     }
 
+    /**
+     * Método responsavel por incluir JSON no Header da Requisição.
+     * @return $this
+     */
     public function withJson()
     {
         $this->headers[] = 'Content-Type: application/json';
         return $this;
     }
 
+    /**
+     * Método responsavel por adicionar Headers para uma requisição.
+     * @param string $key - Nome da Header, ex.: "Authorization"
+     * @param string $value - Valor da Header, ex.: "Bearer swqw2eweadasd..."
+     * @return $this
+     */
     public function setHeader(string $key, string $value)
     {
         $this->headers[] = $key . ": " . $value;
         return $this;
     }
 
+    /**
+     * Método responsavel por adicionar um header que precisa ser um json em seu valor.
+     * @param string $key - Nome da Header, Ex.: "Dropbox-id".
+     * @param array $values - Valores da header em array para ser formatado em JSON, ex.: ['path' => '/directory', ... ]
+     * @return $this
+     */
     public function setJsonHeader(string $key, array $values)
     {
         $payload = json_encode($values);
@@ -61,6 +77,11 @@ class Request{
         return $this;
     }
 
+    /**
+     * Método responsavel por enviar path de arquivos, ele faz uma leitura do conteudo desse aquivo e envia.
+     * @param string $path - Diretorio onde está localizado o arquivo no disco.
+     * @return $this
+     */
     public function sendFile(string $path)
     {
         $fp = fopen($path, 'rb');
@@ -71,10 +92,9 @@ class Request{
     }
 
     /**
-     * Método responsável por criar uma chamada do tipo POST.
-     * @param array $data - Dadas de FORM que serão buscado ou chamados pelo post.
+     * Método responsavel por fazer uma requisição POST
+     * @param array $data - Valores do Body da Requisição que pode ser em branco.
      * @return $this
-     * @throws \Exception
      */
     public function post(array $data=[])
     {
@@ -129,11 +149,7 @@ class Request{
         return $this;
     }
 
-    public function withErrors()
-    {
-        var_dump($this->errors);
-        return $this;
-    }
+
 
     /**
      * Método responsável por executar a chamada CURL e retornar um array associativo ou erros.
@@ -155,12 +171,11 @@ class Request{
         return $this;
     }
 
-
-    public function data()
-    {
-        return $this->data;
-    }
-
+    /**
+     * Método responsável para informar ao CURL de que se trata de um download de arquivo.
+     * @param $dest - Diretorio onde será armazenado o arquivo no disco.
+     * @return $this
+     */
     public function download($dest)
     {
         set_time_limit(0);
@@ -177,8 +192,30 @@ class Request{
     }
 
 
+    /**
+     * Método responsável por trazer as informações da API
+     * @return array
+     */
+    public function data()
+    {
+        return $this->data;
+    }
 
+    /**
+     * Método responsável por trazer as informações da API em JSON.
+     */
+    public function json()
+    {
+        echo json_encode($this->data);
+    }
 
-
-
+    /**
+     * Método responsável por debug de erros da API.
+     * @return $this
+     */
+    public function withErrors()
+    {
+        var_dump($this->errors);
+        return $this;
+    }
 }
