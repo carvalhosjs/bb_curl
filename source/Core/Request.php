@@ -106,6 +106,19 @@ class Request{
         return $this;
     }
 
+    /**Método responsavel por fazer uma requisição POST com Form/data
+     * @param array $data
+     * @return $this
+     */
+    public function postFileForm(array $data)
+    {
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "POST");
+        return $this;
+    }
+
+
+
     /**
      * Método responsável por criar uma chamada do tipo PUT.
      * @param array $data - Dadas de FORM que serão buscado ou chamados pelo post.
