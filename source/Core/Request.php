@@ -112,16 +112,14 @@ class Request{
      * @return $this
      * @throws \Exception
      */
-    public function put(array $data)
+    public function put(array $data=[])
     {
 
-        if(empty($data)){
-            throw  new \Exception("Dados em branco");
-            exit;
+        if(!empty($data)){
+            $data_string = json_encode($data);
+            curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data_string);
         }
-        $data_string = json_encode($data);
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "PUT");
-        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data_string);
         return $this;
     }
 
